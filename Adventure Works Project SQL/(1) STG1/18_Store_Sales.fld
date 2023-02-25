@@ -1,0 +1,82 @@
+ 
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.25.128/dbc,dbc;
+
+DATABASE awp_stg1;
+.set record vartext ",";
+
+
+DROP TABLE Store_Sales;
+DROP TABLE Store_Sales_ERROR1;
+DROP TABLE Store_Sales_ERROR2; 
+
+CREATE SET TABLE Store_Sales ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL
+	 (
+BusinessEntityID		VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+Name1		VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+SalesPersonID		VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+Demographics		VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+rowguid		VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+ModifiedDate		VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC
+
+
+
+	 )
+	PRIMARY INDEX Store_Sales (BusinessEntityID);
+
+RECORD 2;
+
+DEFINE
+
+BusinessEntityID	(VARCHAR(500))
+Name1	(VARCHAR(500))
+SalesPersonID	(VARCHAR(500))
+Demographics	(VARCHAR(500))
+rowguid	(VARCHAR(500))
+ModifiedDate	(VARCHAR(500))
+
+
+
+
+FILE="D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Sales\18 Store_Sales.CSV";
+
+begin loading
+Store_Sales
+errorfiles
+Store_Sales_ERROR1
+,Store_Sales_ERROR2
+
+
+CHECKPOINT 400000;
+
+insert into Store_Sales (
+BusinessEntityID,
+Name1,
+SalesPersonID,
+Demographics,
+rowguid,
+ModifiedDate
+
+
+
+)
+
+values
+
+(
+:BusinessEntityID,
+:Name1,
+:SalesPersonID,
+:Demographics,
+:rowguid,
+:ModifiedDate
+
+);
+
+
+end loading;
+
+.LOGOFF; 

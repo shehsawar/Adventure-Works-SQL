@@ -1,0 +1,81 @@
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.25.128/dbc,dbc;
+
+DATABASE awp_stg1;
+.set record vartext ",";
+
+DROP TABLE prod_wo;
+DROP TABLE prod_wo_ERROR1;
+DROP TABLE prod_wo_ERROR2;
+
+CREATE MULTISET TABLE prod_wo, NO FALLBACK, NO BEFORE JOURNAL, NO AFTER JOURNAL
+(
+	WorkOrderID varchar(200),
+	ProductID varchar(200),
+	OrderQty varchar(200),
+	StockedQty varchar(200),
+	ScrappedQty varchar(200),
+	StartDate varchar(200),
+	EndDate varchar(200),
+	DueDate varchar(200),
+	ScrapReasonID varchar(200),
+	ModifiedDate varchar(200)
+)
+PRIMARY INDEX prod_wo (WorkOrderID);
+
+RECORD 2;
+
+DEFINE
+	WorkOrderID (varchar(200)),
+	ProductID (varchar(200)),
+	OrderQty (varchar(200)),
+	StockedQty (varchar(200)),
+	ScrappedQty (varchar(200)),
+	StartDate (varchar(200)),
+	EndDate (varchar(200)),
+	DueDate (varchar(200)),
+	ScrapReasonID (varchar(200)),
+	ModifiedDate (varchar(200))
+
+FILE = "D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Production\WorkOrder_Production.CSV";
+
+begin loading
+prod_wo
+errorfiles
+prod_wo_ERROR1,
+prod_wo_ERROR2
+
+CHECKPOINT 10000; -- keep this number larger for smooth executing of the fld code in cmd
+
+insert into prod_wo
+(
+	WorkOrderID,
+	ProductID,
+	OrderQty,
+	StockedQty,
+	ScrappedQty,
+	StartDate,
+	EndDate,
+	DueDate,
+	ScrapReasonID,
+	ModifiedDate
+)
+
+values
+(
+	:WorkOrderID,
+	:ProductID,
+	:OrderQty,
+	:StockedQty,
+	:ScrappedQty,
+	:StartDate,
+	:EndDate,
+	:DueDate,
+	:ScrapReasonID,
+	:ModifiedDate
+);
+
+end loading; 
+
+.LOGOFF;

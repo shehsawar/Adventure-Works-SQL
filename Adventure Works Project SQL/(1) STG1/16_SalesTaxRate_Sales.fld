@@ -1,0 +1,86 @@
+ 
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.25.128/dbc,dbc;
+
+DATABASE awp_stg1;
+.set record vartext ",";
+
+
+DROP TABLE SalesTaxRate_Sales;
+DROP TABLE SalesTaxRate_Sales_ERROR1;
+DROP TABLE SalesTaxRate_Sales_ERROR2; 
+
+CREATE SET TABLE SalesTaxRate_Sales ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL
+	 (
+SalesTaxRateID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+StateProvinceID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+TaxType	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+TaxRate	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+Name	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+rowguid	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+ModifiedDate	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC
+
+
+
+	 )
+	PRIMARY INDEX SalesTaxRate_Sales (SalesTaxRateID);
+
+RECORD 2;
+
+DEFINE
+
+SalesTaxRateID	(VARCHAR(500))
+StateProvinceID	(VARCHAR(500))
+TaxType	(VARCHAR(500))
+TaxRate	(VARCHAR(500))
+Name	(VARCHAR(500))
+rowguid	(VARCHAR(500))
+ModifiedDate	(VARCHAR(500))
+
+
+
+FILE="D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Sales\16 SalesTaxRate_Sales.CSV";
+
+begin loading
+SalesTaxRate_Sales
+errorfiles
+SalesTaxRate_Sales_ERROR1
+,SalesTaxRate_Sales_ERROR2
+
+
+CHECKPOINT 400000;
+
+insert into SalesTaxRate_Sales (
+SalesTaxRateID,
+StateProvinceID,
+TaxType,
+TaxRate,
+Name,
+rowguid,
+ModifiedDate
+
+
+)
+
+values
+
+(
+:SalesTaxRateID,
+:StateProvinceID,
+:TaxType,
+:TaxRate,
+:Name,
+:rowguid,
+:ModifiedDate
+
+
+
+);
+
+
+end loading;
+
+.LOGOFF; 

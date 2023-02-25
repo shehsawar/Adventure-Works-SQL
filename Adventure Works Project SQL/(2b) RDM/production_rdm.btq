@@ -1,0 +1,139 @@
+.LOGON 192.168.25.128 /dbc,dbc;
+DATABASE awp_rdm;
+
+-- Production Module
+
+
+
+-- Master Tables (21)
+CREATE MULTISET TABLE awp_rdm.Production_culture 
+AS awp_stg2.Production_culture
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_location 
+AS awp_stg2.Production_location
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product 
+AS awp_stg2.Production_product
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_cost_history 
+AS awp_stg2.Production_product_cost_history
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_description 
+AS awp_stg2.Production_product_description
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_inventory 
+AS awp_stg2.Production_product_inventory
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_list_price_history 
+AS awp_stg2.Production_product_list_price_history
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_model
+AS awp_stg2.Production_product_model
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_model_illustration
+AS awp_stg2.Production_product_model_illustration
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_model_product_description_culture 
+AS awp_stg2.Production_product_model_product_description_culture
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_review 
+AS awp_stg2.Production_product_review
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_work_order
+AS awp_stg2.Production_work_order
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_work_order_routing
+AS awp_stg2.Production_work_order_routing
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_unit_measure
+AS awp_stg2.Production_unit_measure
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_category 
+AS awp_stg2.Production_product_category
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_subcategory 
+AS awp_stg2.Production_product_subcategory
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_scrap_reason
+AS awp_stg2.Production_scrap_reason
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_bill_of_materials
+AS awp_stg2.Production_bill_of_materials
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_document
+AS awp_stg2.Production_document
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_illustration
+AS awp_stg2.Production_illustration
+WITH DATA;
+
+
+CREATE MULTISET TABLE awp_rdm.Production_product_document
+AS awp_stg2.Production_product_document
+WITH DATA;
+
+
+-- Transactional Table (1)
+CREATE MULTISET TABLE awp_rdm.Production_transaction_history
+	
+	( 
+		TransactionID INTEGER,
+		ProductID_1 INTEGER,
+		ReferenceOrderID INTEGER,
+		ReferenceOrderLineID INTEGER,
+		TransactionDate DATE FORMAT 'MM/DD/YYYY',
+		TransactionType CHAR(1),
+		Quantity_1 SMALLINT,
+		ActualCost DECIMAL(8,2)
+	)
+
+	PRIMARY INDEX ( TransactionID )
+	PARTITION BY RANGE_N ( TransactionDate BETWEEN DATE '2007-09-01' AND '2008-07-31' EACH INTERVAL '1' DAY );
+
+INSERT INTO awp_rdm.Production_transaction_history
+SELECT TransactionID, ProductID_1, ReferenceOrderID, ReferenceOrderLineID, TransactionDate, TransactionType, Quantity_1, ActualCost 
+FROM  awp_stg2.Production_transaction_history;
+
+-- not using (select * ) because we've excluded modified_date becasue using PPI on TransactionDate
+
+-- if dates are not sorted correctly in the Transaction Table even after using PPI, sort TransactionID column (this is normal)
+
+.LOGOFF

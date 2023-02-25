@@ -1,0 +1,712 @@
+-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+.LOGON 192.168.25.128 /dbc,dbc;
+DATABASE awp_stg2;
+
+-- Production Module
+-- only 21 of 25 tables are created
+-- because columns of others weren't given in CSV file
+
+-- Data Definition Language (DDL)
+
+
+-- Table 1/22 : Product Review
+CREATE TABLE awp_stg2.Production_product_review
+(
+	ProductReviewID INTEGER,
+	ProductID_3 INTEGER,
+	ReviewerName varchar(500),
+	ReviewDate DATE,
+	EmailAddress varchar(500),
+	Rating varchar(500),
+	Comments varchar(500),
+	ModifiedDate_3 DATE
+
+)
+PRIMARY INDEX (ProductReviewID);
+
+-- Table 2/22 : Product List Price History
+
+CREATE TABLE awp_stg2.Production_product_list_price_history
+(
+	ProductID_6 INTEGER,
+	StartDate DATE,
+	EndDate DATE,
+	ListPrice DECIMAL(8,2),
+	ModifiedDate_9 DATE
+)
+PRIMARY INDEX (ProductID_6);
+
+------------------------------------------------------- Table 3/22 : Product Model Illustration
+
+CREATE TABLE awp_stg2.Production_product_model_illustration
+(
+	ProductModelID INTEGER,
+	IllustrationID_1 INTEGER,
+	ModifiedDate_14 DATE
+)
+
+PRIMARY INDEX (ProductModelID);
+
+--------------------------------------------------------------- Table 4/22 : Illustration
+
+CREATE TABLE awp_stg2.Production_illustration
+(
+	IllustrationID INTEGER,
+	Diagram varchar(500),
+	ModifiedDate_15 DATE
+)
+
+PRIMARY INDEX (IllustrationID);
+
+------------------------------------------------------------- Table 5/22 : Bill of Materials
+
+CREATE TABLE awp_stg2.Production_bill_of_materials
+(
+	BillofMaterialsID	INTEGER,
+	ProductAssemblyID   INTEGER,
+	ComponentID 		INTEGER,
+	StartDate 			DATE,
+	EndDate 			DATE,
+	UnitMeasureCode 	CHAR(3),
+	BOMLevel 			INTEGER,
+	PerAssemblyQty 		SMALLINT,
+	ModifiedDate 		DATE
+)
+
+PRIMARY INDEX (BillofMaterialsID);
+
+----------------------------------------------------------------- Table 6/22 : Product
+
+CREATE TABLE awp_stg2.Production_product
+(
+	ProductID_2 INTEGER,
+	Name_1 varchar(500),
+	ProductNumber varchar(500),
+	MakeFlag BYTEINT,
+	FinishedGoodsFlag BYTEINT,
+	Color_ varchar(500),
+	SafetyStockLevel SMALLINT,
+	ReorderPoint SMALLINT,
+	StandardCost_1 DECIMAL(8,2),
+	ListPrice_1 DECIMAL(8,2),
+	Size varchar(500),
+	SizeUnitMeasureCode varchar(500),
+	WeightUnitMeasureCode varchar(500),
+	Weight varchar(500),
+	DaysToManufacture INTEGER,
+	ProductLine CHAR(1),
+	Class_ varchar(500),
+	Style_ CHAR(1),
+	ProductSubcategoryID_1 INTEGER,
+	ProductModelID_1 INTEGER,
+	SellStartDate DATE,
+	SellEndDate DATE,
+	DiscontinuedDate DATE,
+	rowguid_1 varchar(500),
+	ModifiedDate_2 DATE
+)
+PRIMARY INDEX (ProductID_2);
+
+------------------------------------------------------------- Table 7/22 : Product Sub Category
+
+CREATE TABLE awp_stg2.Production_product_subcategory
+(
+	ProductSubcategoryID INTEGER,
+	ProductCategoryID_2 INTEGER,
+	Name_2 varchar(500),
+	rowguid_2 varchar(500),
+	ModifiedDate_4 DATE
+)
+PRIMARY INDEX (ProductSubcategoryID);
+
+---------------------------------------------------------------- Table 8/22 : Product Model
+
+CREATE TABLE awp_stg2.Production_product_model
+(
+	ProductModelID_2 INTEGER,
+	Name_5 varchar(500),
+	CatalogDescription varchar(500),
+	Instructions varchar(500),
+	rowguid_5 varchar(500),
+	ModifiedDate_10 DATE
+)
+PRIMARY INDEX (ProductModelID_2);
+	
+------------------------------------------------- Table 9/22 : Product Model Product Description Culture
+
+CREATE TABLE awp_stg2.Production_product_model_product_description_culture
+(
+	ProductModelID_3 INTEGER,
+	ProductDescriptionID_1 INTEGER,
+	CultureID_1 varchar(500),
+	ModifiedDate_11 DATE
+)
+PRIMARY INDEX (ProductModelID_3);
+
+---------------------------------------------------------------- Table 10/22 : Product Category
+
+CREATE TABLE awp_stg2.Production_product_category
+(
+	ProductCategoryID INTEGER,
+	Name_3 varchar(500),
+	rowguid_3 varchar(500),
+	ModifiedDate_5 varchar(500)
+)
+PRIMARY INDEX (ProductCategoryID);
+
+----------------------------------------------------------------- Table 11/22 : Product Description
+
+CREATE TABLE awp_stg2.Production_product_description
+(
+	ProductDescriptionID INTEGER,
+	Description varchar(500),
+	rowguid_6 varchar(500),
+	ModifiedDate_13 DATE
+)
+PRIMARY INDEX (ProductDescriptionID);
+
+--------------------------------------------------------------------- Table 12/22 : Culture
+
+CREATE TABLE awp_stg2.Production_culture
+(
+	CultureID varchar(500),
+	Name_ varchar(500),
+	ModifiedDate_12 DATE
+)
+PRIMARY INDEX (CultureID);
+
+----------------------------------------------------------------- Table 13/22 : Transaction Hitory
+
+CREATE TABLE awp_stg2.Production_transaction_history
+(
+	TransactionID INTEGER,
+	ProductID_1 INTEGER,
+	ReferenceOrderID INTEGER,
+	ReferenceOrderLineID INTEGER,
+	TransactionDate DATE,
+	TransactionType CHAR(1),
+	Quantity_1 SMALLINT,
+	ActualCost DECIMAL(8,2),
+	ModifiedDate_1 DATE
+)
+PRIMARY INDEX (TransactionID);
+
+--------------------------------------------------------------- Table 14/22 : Product Cost History
+
+CREATE TABLE awp_stg2.Production_product_cost_history
+(
+	ProductID_5 INTEGER,
+	StartDate_1 DATE,
+	EndDate_1 DATE,
+	StandardCost DECIMAL(8,2),
+	ModifiedDate_8 DATE
+)
+PRIMARY INDEX (ProductID_5 );
+
+----------------------------------------------------------------- Table 15/22 : Product Document
+
+CREATE TABLE awp_stg2.Production_product_document
+(
+	ProductID INTEGER,
+	DocumentNode_1 varchar(500),
+	ModifiedDate_16 DATE
+)
+PRIMARY INDEX (ProductID);
+
+----------------------------------------------------------------- Table 16/22 : Product Inventory
+
+CREATE TABLE awp_stg2.Production_product_inventory
+(
+	ProductID_4 INTEGER,
+	LocationID_1 INTEGER,
+	Shelf varchar(500),
+	Bin INTEGER,
+	Quantity INTEGER,
+	rowguid_4 varchar(500),
+	ModifiedDate_6 DATE
+)
+PRIMARY INDEX (ProductID_4 );
+
+------------------------------------------------------------------ Table 17/22 : Work Order Routing
+
+CREATE TABLE awp_stg2.Production_work_order_routing
+(
+	WorkOrderID INTEGER,
+	ProductID INTEGER,
+	OperationSequence INTEGER,
+	LocationID INTEGER,
+	ScheduledStartDate DATE,
+	ScheduledEndDate DATE,
+	ActualStartDate DATE,
+	ActualEndDate DATE,
+	ActualResourceHrs DECIMAL(2,1),
+	PlannedCost DECIMAL(4,2),
+	ActualCost DECIMAL(4,2),
+	ModifiedDate DATE
+)
+PRIMARY INDEX (ProductID);
+
+---------------------------------------------------------------------- Table 18/22 : Document
+
+CREATE TABLE awp_stg2.Production_document
+(
+	DocumentNode INTEGER,
+	DocumentLevel INTEGER,
+	Title_ VARCHAR(500),
+	Owner_ VARCHAR(500),
+	FolderFlag BYTEINT,
+	FileName VARCHAR(500),
+	FileExtension VARCHAR(500),
+	Revision VARCHAR(500),
+	ChangeNumber INTEGER,
+	Status VARCHAR(500),
+	DocumentSummary VARCHAR(3085),
+	Document_ VARCHAR(500),
+	rowguid VARCHAR(500),
+	ModifiedDate DATE
+)
+PRIMARY INDEX (DocumentNode);
+	
+-------------------------------------------------------------------- Table 19/22 : Location 
+
+CREATE TABLE awp_stg2.Production_location
+(
+	LocationID INTEGER,
+	Name_4 VARCHAR(500),
+	CostRate DECIMAL (8,2),
+	Availability DECIMAL (8,2),
+	ModifiedDate_7 DATE
+)
+
+PRIMARY INDEX (LocationID);
+
+------------------------------------------------------------------- Table 20/22 : Scrap Reason
+
+CREATE TABLE awp_stg2.Production_scrap_reason
+
+(
+	ScrapReasonID	INTEGER,
+	Name			VARCHAR(50)  
+)			
+
+PRIMARY INDEX (ScrapReasonID);
+
+-------------------------------------------------------------------- Table 21/22 : Work Order
+
+CREATE TABLE awp_stg2.Production_work_order
+(
+	WorkOrderID INTEGER,
+	ProductID INTEGER,
+	OrderQty INTEGER,
+	StockedQty INTEGER,
+	ScrappedQty INTEGER,
+	StartDate DATE,
+	EndDate DATE,
+	DueDate DATE,
+	ScrapReasonID INTEGER,
+	ModifiedDate DATE
+	
+)
+
+PRIMARY INDEX (WorkOrderID);
+
+-------------------------------------------------------------------- Table 22/22 : Unit Measure
+
+CREATE TABLE awp_stg2.Production_unit_measure
+(
+	UnitMeasureCode 	VARCHAR(3),
+	Name_10				VARCHAR(500),
+	ModifiedDate 		DATE
+)
+PRIMARY INDEX (UnitMeasureCode);
+
+
+.LOGOFF
+
+
+
+-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+.LOGON 192.168.25.128 /dbc,dbc; 
+DATABASE awp_stg2;
+
+-- Production Module
+
+-- Data Modification Language (DML)
+
+-- Table 1/22 : Product Review
+
+INSERT INTO awp_stg2.Production_product_review (ProductReviewID,ProductID_3,ReviewerName,ReviewDate,EmailAddress,Rating,Comments,ModifiedDate_3)
+							
+SELECT DISTINCT
+		CASE WHEN ProductReviewID = 'NULL' THEN -1 ELSE CAST (ProductReviewID AS INTEGER) END AS ProductReviewID,
+		CASE WHEN ProductID_3 ='NULL' THEN -1 ELSE CAST (ProductID_3 AS INTEGER)END AS ProductID_3,
+		CASE WHEN ReviewerName = 'NULL' THEN 'N/A' ELSE ReviewerName  END AS ReviewerName,
+		CASE ReviewDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ReviewDate,1,10) AS DATE FORMAT 'YYYY-MM-DD') END AS ReviewDate,
+		CASE WHEN EmailAddress='NULL' THEN 'N/A' ELSE EmailAddress  END AS EmailAddress,
+		CASE WHEN Rating= 'NULL' THEN 'N/A' ELSE Rating  END AS Rating,
+		CASE WHEN Comments= 'NULL' THEN 'N/A' ELSE Comments  END AS Comments,
+		CASE ModifiedDate_3 WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_3,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_3
+		
+FROM awp_stg1.prod;		
+
+------------------------------------------------------ Table 2/22 : Product List Price History
+
+INSERT INTO awp_stg2.Production_product_list_price_history (ProductID_6,StartDate,EndDate,ListPrice,ModifiedDate_9)
+
+SELECT DISTINCT 
+	CASE WHEN ProductID_6 ='NULL' THEN -1 ELSE ProductID_6 END AS ProductID_6,
+	CASE StartDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(StartDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS StartDate,
+	CASE EndDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(EndDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS EndDate,
+	CASE WHEN ListPrice= 'NULL' THEN 0 ELSE CAST (ListPrice AS DECIMAL(8,2)) END AS ListPrice,
+	CASE ModifiedDate_9 WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_9,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_9
+ 
+FROM awp_stg1.prod;
+
+--------------------------------------------------- Table 3/22 : Product Model Illustration
+
+INSERT INTO awp_stg2.Production_product_model_illustration (ProductModelID, IllustrationID_1,ModifiedDate_14)
+
+SELECT DISTINCT
+	CASE WHEN ProductModelID = 'NULL' THEN -1 ELSE ProductModelID  END AS ProductModelID,
+	CASE WHEN IllustrationID_1 = 'NULL' THEN -1 ELSE IllustrationID_1  END AS IllustrationID_1,
+	CASE ModifiedDate_14  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_14,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_14
+	
+FROM awp_stg1.prod;
+
+--------------------------------------------------------- Table 4/22 : Illustration
+
+INSERT INTO awp_stg2.Production_illustration ( IllustrationID, Diagram, ModifiedDate_15)
+
+SELECT DISTINCT
+	CASE WHEN IllustrationID = 'NULL' THEN -1 ELSE IllustrationID  END AS IllustrationID,
+	CASE WHEN Diagram = 'NULL' THEN 'N/A' ELSE Diagram  END AS Diagram,
+	CASE ModifiedDate_15  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_15,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_15
+
+FROM awp_stg1.prod;
+
+------------------------------------------------------ Table 5/22 : Bill of Materials
+
+INSERT INTO awp_stg2.Production_bill_of_materials (BillofMaterialsID, ProductAssemblyID, ComponentID, StartDate, EndDate, UnitMeasureCode, BOMLevel, PerAssemblyQty, ModifiedDate )
+	
+SELECT DISTINCT
+	CASE WHEN BillofMaterialsID = 'NULL' THEN -1 ELSE CAST ( BillofMaterialsID AS INTEGER)  END AS IllustrationID,
+	CASE WHEN ProductAssemblyID = 'NULL' THEN -1 ELSE CAST ( ProductAssemblyID AS INTEGER) END AS ProductAssemblyID,
+	CASE WHEN  ComponentID = 'NULL' THEN -1 ELSE CAST ( ComponentID AS INTEGER)  END AS  ComponentID,
+	CASE StartDate  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(StartDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS StartDate,
+	CASE EndDate  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(EndDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS EndDate,
+	CASE WHEN UnitMeasureCode = 'NULL' THEN 'N/A' ELSE CAST (UnitMeasureCode AS CHAR(3))  END AS UnitMeasureCode,
+	CASE WHEN  BOMLevel = 'NULL' THEN -1 ELSE CAST ( BOMLevel AS INTEGER)  END AS  BOMLevel,
+	CASE WHEN  PerAssemblyQty = 'NULL' THEN -1 ELSE CAST ( PerAssemblyQty AS SMALLINT)  END AS  PerAssemblyQty,
+	CASE ModifiedDate  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate
+
+FROM awp_stg1.prod_bom;
+
+----------------------------------------------------------- Table 6/22 : Product
+
+INSERT INTO awp_stg2.Production_product (ProductID_2,Name_1,ProductNumber,MakeFlag,FinishedGoodsFlag,Color_,SafetyStockLevel,
+								ReorderPoint,StandardCost_1,ListPrice_1,Size,SizeUnitMeasureCode,WeightUnitMeasureCode,
+								Weight,DaysToManufacture,ProductLine,Class_,Style_,ProductSubcategoryID_1,ProductModelID_1,SellStartDate,SellEndDate,
+								DiscontinuedDate,rowguid_1,ModifiedDate_2)
+SELECT DISTINCT	
+	CASE WHEN ProductID_2 = 'NULL' THEN -1 ELSE ProductID_2  END AS ProductID_2,
+	CASE WHEN Name_1 = 'NULL' THEN 'N/A' ELSE Name_1  END AS Name_1,
+	CASE WHEN ProductNumber = 'NULL' THEN 'N/A' ELSE ProductNumber  END AS ProductNumber,
+	CASE WHEN MakeFlag = 'NULL' THEN -1 ELSE CAST (MakeFlag AS BYTEINT)  END AS MakeFlag,
+	CASE WHEN FinishedGoodsFlag = 'NULL' THEN -1 ELSE CAST (FinishedGoodsFlag AS BYTEINT)  END AS FinishedGoodsFlag,
+	CASE WHEN Color_ = 'NULL' THEN 'N/A' ELSE Color_  END AS Color_,
+	CASE WHEN SafetyStockLevel = 'NULL' THEN -1 ELSE CAST (SafetyStockLevel AS BYTEINT)  END AS SafetyStockLevel,
+	CASE WHEN ReorderPoint = 'NULL' THEN -1 ELSE CAST (ReorderPoint AS BYTEINT)  END AS ReorderPoint,
+	CASE WHEN StandardCost_1 = 'NULL' THEN -1 ELSE CAST (StandardCost_1 AS DECIMAL(8,2))  END AS StandardCost_1,
+	CASE WHEN ListPrice_1 = 'NULL' THEN -1 ELSE CAST (ListPrice_1 AS DECIMAL(8,2))  END AS ListPrice_1,
+	CASE WHEN Size = 'NULL' THEN 'N/A' ELSE Size  END AS Size,
+	CASE WHEN SizeUnitMeasureCode = 'NULL' THEN 'N/A' ELSE SizeUnitMeasureCode END AS SizeUnitMeasureCode,
+	CASE WHEN WeightUnitMeasureCode = 'NULL' THEN 'N/A' ELSE WeightUnitMeasureCode  END AS WeightUnitMeasureCode,
+	CASE WHEN Weight = 'NULL' THEN 'N/A' ELSE Weight END AS Weight,
+	CASE WHEN DaysToManufacture = 'NULL' THEN -1 ELSE DaysToManufacture  END AS DaysToManufacture,
+	CASE WHEN ProductLine = 'NULL' THEN 'N/A' ELSE ProductLine END AS ProductLine,
+	CASE WHEN Class_ = 'NULL' THEN 'N/A' ELSE Class_ END AS Class_,
+	CASE WHEN Style_ = 'NULL' THEN 'N/A' ELSE Style_ END AS Style_,
+	CASE WHEN ProductSubcategoryID_1 = 'NULL' THEN -1 ELSE ProductSubcategoryID_1  END AS ProductSubcategoryID_1,
+	CASE WHEN ProductModelID_1 = 'NULL' THEN -1 ELSE ProductModelID_1  END AS ProductModelID_1,
+	CASE SellStartDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(SellStartDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS SellStartDate,
+	CASE SellEndDate  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(SellEndDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS SellEndDate,
+	CASE DiscontinuedDate  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(DiscontinuedDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS DiscontinuedDate,
+	CASE WHEN rowguid_1 = 'NULL' THEN 'N/A' ELSE rowguid_1 END AS rowguid_1,
+	CASE ModifiedDate_2  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_2,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_2
+	
+FROM awp_stg1.prod;
+
+---------------------------------------------------- Table 7/22 : Product Sub Category
+
+INSERT INTO awp_stg2.Production_product_subcategory (ProductSubcategoryID,ProductCategoryID_2,Name_2,rowguid_2,ModifiedDate_4)
+
+SELECT DISTINCT
+	CASE WHEN ProductSubcategoryID_1 = 'NULL' THEN -1 ELSE ProductSubcategoryID_1  END AS ProductSubcategoryID_1,
+	CASE WHEN ProductCategoryID_2 = 'NULL' THEN -1 ELSE ProductCategoryID_2 END AS ProductCategoryID_2,
+	CASE WHEN Name_2= 'NULL' THEN 'N/A' ELSE Name_2 END AS Name_2,
+	CASE WHEN rowguid_2 = 'NULL' THEN 'N/A' ELSE rowguid_2 END AS rowguid_2,
+	CASE ModifiedDate_4  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_4,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_4
+
+FROM awp_stg1.prod;
+
+------------------------------------------------------ Table 8/22 : Product Model
+
+INSERT INTO awp_stg2.Production_product_model ( ProductModelID_2,Name_5,CatalogDescription,Instructions,rowguid_5,ModifiedDate_10)
+
+SELECT DISTINCT
+	CASE WHEN ProductModelID_2 = 'NULL' THEN -1 ELSE ProductModelID_2  END AS ProductModelID_2,
+	CASE WHEN Name_5='NULL' THEN 'N/A' ELSE Name_5 END AS Name_5,
+	CASE WHEN CatalogDescription='NULL' THEN 'N/A' ELSE CatalogDescription END AS CatalogDescription,
+	CASE WHEN Instructions='NULL' THEN 'N/A' ELSE Instructions END AS Instructions,
+	CASE WHEN rowguid_5 = 'NULL' THEN 'N/A' ELSE rowguid_5 END AS rowguid_5,
+	CASE ModifiedDate_10  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_10,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_10
+
+FROM awp_stg1.prod;
+
+------------------------------------------- Table 9/22 : Product Model Product Description Culture
+
+INSERT INTO awp_stg2.Production_product_model_product_description_culture (ProductModelID_3,ProductDescriptionID_1,CultureID_1,ModifiedDate_11)
+
+SELECT DISTINCT
+	CASE WHEN ProductModelID_3 = 'NULL' THEN -1 ELSE ProductModelID_3  END AS ProductModelID_3,
+	CASE WHEN ProductDescriptionID_1 = 'NULL' THEN -1 ELSE ProductDescriptionID_1  END AS ProductDescriptionID_1,
+	CASE WHEN CultureID_1 = 'NULL' THEN 'N/A' ELSE CultureID_1  END AS CultureID_1,
+	CASE ModifiedDate_11  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_11,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_11
+FROM awp_stg1.prod;	
+
+-------------------------------------------------- Table 10/22 : Product Category
+
+INSERT INTO awp_stg2.Production_product_category (ProductCategoryID,Name_3,rowguid_3,ModifiedDate_5)
+
+SELECT DISTINCT
+	CASE WHEN ProductCategoryID = 'NULL' THEN -1 ELSE ProductCategoryID END AS ProductCategoryID,
+	CASE WHEN Name_3='NULL' THEN 'N/A' ELSE Name_3 END AS Name_3,
+	CASE WHEN rowguid_3='NULL' THEN 'N/A' ELSE rowguid_3 END AS rowguid_3,
+	CASE ModifiedDate_5  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_5,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_5
+
+FROM awp_stg1.prod;
+
+-------------------------------------------------- Table 11/22 : Product Description
+
+INSERT INTO awp_stg2.Production_product_description (ProductDescriptionID,Description,rowguid_6,ModifiedDate_13)
+
+SELECT DISTINCT
+	CASE WHEN ProductDescriptionID = 'NULL' THEN -1 ELSE ProductDescriptionID  END AS ProductDescriptionID,
+	CASE WHEN Description = 'NULL' THEN 'N/A' ELSE Description  END AS Description,
+	CASE WHEN rowguid_6 = 'NULL' THEN 'N/A' ELSE rowguid_6  END AS rowguid_6,
+	CASE ModifiedDate_13  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_13,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_13
+
+FROM awp_stg1.prod;
+
+------------------------------------------------------ Table 12/22 : Culture
+
+INSERT INTO awp_stg2.Production_culture (CultureID,Name_ ,ModifiedDate_12)
+
+SELECT DISTINCT
+	CASE WHEN CultureID = 'NULL' THEN -1 ELSE CultureID  END AS CultureID,
+	CASE WHEN Name_='NULL' THEN 'N/A' ELSE Name_ END AS Name_,
+	CASE ModifiedDate_12  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_12,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_12
+
+FROM awp_stg1.prod;
+	
+-------------------------------------------------- Table 13/22 : Transaction Hitory
+
+INSERT INTO awp_stg2.Production_transaction_history (TransactionID,ProductID_1,ReferenceOrderID,ReferenceOrderLineID,TransactionDate ,
+							TransactionType ,Quantity_1 ,ActualCost,ModifiedDate_1)
+SELECT DISTINCT
+	CASE WHEN TransactionID = 'NULL' THEN -1 ELSE TransactionID END AS TransactionID,
+	CASE WHEN ProductID_1  = 'NULL' THEN -1 ELSE ProductID_1 END AS ProductID_1,
+	CASE WHEN ReferenceOrderID = 'NULL' THEN -1 ELSE ReferenceOrderID END AS ReferenceOrderID,
+	CASE WHEN ReferenceOrderLineID = 'NULL' THEN -1 ELSE CAST (ReferenceOrderLineID AS SMALLINT)  END AS ReferenceOrderLineID,
+	CASE TransactionDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(TransactionDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS TransactionDate,
+	CASE WHEN TransactionType='NULL' THEN 'N/A' ELSE TransactionType END AS TransactionType,
+	CASE WHEN Quantity= 'NULL' THEN 0 ELSE CAST (Quantity AS SMALLINT) END AS Quantity,
+	CASE WHEN ActualCost= 'NULL' THEN -1 ELSE CAST (ActualCost AS DECIMAL(10,2)) END AS ActualCost,
+	CASE ModifiedDate_1 WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_1,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_1
+
+FROM awp_stg1.prod;
+
+------------------------------------------------- Table 14/22 : Product Cost History
+
+INSERT INTO awp_stg2.Production_product_cost_history (ProductID_5, StartDate_1 ,EndDate_1, StandardCost,ModifiedDate_8)
+
+SELECT DISTINCT
+	CASE WHEN ProductID_5 = 'NULL' THEN -1 ELSE ProductID_5  END AS ProductID_5,
+	CASE StartDate_1  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(StartDate_1,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS StartDate_1,
+	CASE EndDate_1  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(EndDate_1,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS EndDate_1,
+	CASE WHEN StandardCost= 'NULL' THEN 0 ELSE CAST (StandardCost AS DECIMAL(8,2)) END AS StandardCost,
+	CASE ModifiedDate_8  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_8,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_8
+
+FROM awp_stg1.prod;	
+
+-------------------------------------------------- Table 15/22 : Product Document
+
+INSERT INTO awp_stg2.Production_product_document (ProductID, DocumentNode_1, ModifiedDate_16)
+
+SELECT DISTINCT
+	CASE WHEN ProductID = 'NULL' THEN -1 ELSE ProductID  END AS ProductID,
+	CASE WHEN DocumentNode_1 = 'NULL' THEN 'N/A' ELSE DocumentNode_1 END AS DocumentNode_1,
+	CASE ModifiedDate_16  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_16,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_16
+
+FROM awp_stg1.prod;	
+
+---------------------------------------------------Table 16/22 : Product Inventory
+
+INSERT INTO awp_stg2.Production_product_inventory(ProductID_4,LocationID_1,Shelf , Bin, Quantity, rowguid_4, ModifiedDate_6)
+	
+SELECT DISTINCT	
+	CASE WHEN ProductID_4 = 'NULL' THEN -1 ELSE ProductID_4 END AS ProductID_4,
+	CASE WHEN LocationID_1 = 'NULL' THEN -1 ELSE LocationID_1 END AS LocationID_1,
+	CASE WHEN Shelf='NULL' THEN 'N/A' ELSE Shelf END AS Shelf,
+	CASE WHEN Bin= 'NULL' THEN -1 ELSE Bin END AS Bin,
+	CASE WHEN Quantity= 'NULL' THEN -1 ELSE Quantity END AS Quantity,
+	CASE WHEN rowguid_4='NULL' THEN 'N/A' ELSE rowguid_4 END AS rowguid_4,
+	CASE ModifiedDate_6  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_6,1,10) AS DATE FORMAT 'YYYY-MM-DD') END AS ModifiedDate_6
+
+FROM awp_stg1.prod;
+
+-------------------------------------------------- Table 17/22 : Work Order Routing
+
+INSERT INTO awp_stg2.Production_work_order_routing (WorkOrderID,ProductID,OperationSequence,LocationID,ScheduledStartDate,ScheduledEndDate,ActualStartDate,ActualEndDate,
+							ActualResourceHrs,PlannedCost,ActualCost,ModifiedDate)
+							
+SELECT DISTINCT	
+	CASE WHEN WorkOrderID= 'NULL' THEN -1 ELSE WorkOrderID END AS WorkOrderID,
+	CASE WHEN ProductID ='NULL' THEN -1 ELSE ProductID END AS ProductAssemblyID,
+	CASE WHEN OperationSequence='NULL' THEN 0 ELSE OperationSequence END AS OperationSequence,
+	CASE WHEN LocationID ='NULL' THEN -1 ELSE LocationID END AS LocationID,
+	CASE ScheduledStartDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ScheduledStartDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ScheduledStartDate,
+	CASE ScheduledEndDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ScheduledEndDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ScheduledEndDate,
+	CASE ActualStartDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ActualStartDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ActualStartDate,
+	CASE ActualEndDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ActualEndDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ActualEndDate,
+	CASE WHEN ActualResourceHrs= 'NULL' THEN 0 ELSE CAST (ActualResourceHrs AS DECIMAL(2,1)) END AS ActualResourceHrs,
+	CASE WHEN PlannedCost= 'NULL' THEN 0 ELSE CAST (PlannedCost AS DECIMAL(4,2)) END AS PlannedCost,
+	CASE WHEN ActualCost= 'NULL' THEN 0 ELSE CAST (ActualCost AS DECIMAL (4,2))END AS ActualCost,
+	CASE ModifiedDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate
+
+	
+	
+FROM awp_stg1.prod_wor;		
+
+------------------------------------------------- Table 18/22 : Document
+
+INSERT INTO awp_stg2.Production_document (DocumentNode,DocumentLevel, Title_,Owner_,FolderFlag,FileName,FileExtension,Revision,ChangeNumber,
+								Status,DocumentSummary,Document_,rowguid,ModifiedDate)
+								
+SELECT DISTINCT
+	CASE WHEN DocumentNode= 'NULL' THEN 0 ELSE DocumentNode END AS DocumentNode,
+	CASE WHEN DocumentLevel= 'NULL' THEN 0 ELSE DocumentLevel END AS DocumentLevel,
+	CASE WHEN Title_ = 'NULL' THEN 'N/A' ELSE Title_  END AS Title_,
+	CASE WHEN Owner_ = 'NULL' THEN 'N/A' ELSE Owner_  END AS Owner_,
+	CASE WHEN FolderFlag= 'NULL' THEN 0 ELSE CAST (FolderFlag AS BYTEINT) END AS FolderFlag,
+	CASE WHEN FileName = 'NULL' THEN 'N/A' ELSE FileName  END AS FileName,
+	CASE WHEN FileExtension = 'NULL' THEN 'N/A' ELSE FileExtension  END AS FileExtension,
+	CASE WHEN Revision = 'NULL' THEN 'N/A' ELSE Revision  END AS Revision,
+	CASE WHEN ChangeNumber= 'NULL' THEN 0 ELSE ChangeNumber END AS ChangeNumber,
+	CASE WHEN Status= 'NULL' THEN -1 ELSE CAST (Status AS SMALLINT) END AS Status,
+	CASE WHEN DocumentSummary = 'NULL' THEN 'N/A' ELSE DocumentSummary  END AS DocumentSummary,
+	CASE WHEN Document_ = 'NULL' THEN 'N/A' ELSE Document_  END AS Document_,
+	CASE WHEN rowguid = 'NULL' THEN 'N/A' ELSE rowguid  END AS rowguid,
+	CASE ModifiedDate  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END
+	
+FROM awp_stg1.prod;
+
+---------------------------------------------- Table 19/22 : Location 
+
+INSERT INTO awp_stg2.Production_location (LocationID,Name_4, CostRate,Availability,ModifiedDate_7 )
+
+SELECT DISTINCT
+	CASE WHEN LocationID = 'NULL' THEN -1 ELSE LocationID END AS LocationID,
+	CASE WHEN Name_4='NULL' THEN 'N/A' ELSE Name_4 END AS Name_4,
+	CASE WHEN CostRate= 'NULL' THEN 0 ELSE CAST (CostRate AS DECIMAL (8,2)) END AS CostRate,
+	CASE WHEN Availability= 'NULL' THEN 0 ELSE CAST (Availability AS DECIMAL (8,2)) END AS Availability,
+	CASE ModifiedDate_7  WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate_7,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate_7  
+
+FROM awp_stg1.prod;
+
+--------------------------------------------- Table 20/22 : Scrap Reason
+
+INSERT INTO awp_stg2.Production_scrap_reason (ScrapReasonID, Name)
+
+SELECT DISTINCT
+	CASE WHEN ScrapReasonID = 'NULL' THEN -1 ELSE ScrapReasonID END AS ScrapReasonID,
+	CASE WHEN Name='NULL' THEN 'N/A' ELSE Name END AS Name
+
+FROM awp_stg1.prod_sr;
+
+---------------------------------------------- Table 21/22 : Work Order
+
+INSERT INTO awp_stg2.Production_work_order(WorkOrderID ,ProductID ,OrderQty ,StockedQty,ScrappedQty ,StartDate ,EndDate ,DueDate ,ScrapReasonID ,ModifiedDate )
+
+SELECT DISTINCT  
+	CASE WHEN WorkOrderID= 'NULL' THEN -1 ELSE WorkOrderID END AS WorkOrderID,
+	CASE WHEN ProductID ='NULL' THEN -1 ELSE ProductID END AS ProductAssemblyID,
+	CASE WHEN OrderQty='NULL' THEN 0 ELSE OrderQty  END AS OrderQty,
+	CASE WHEN StockedQty ='NULL' THEN 0 ELSE StockedQty  END AS StockedQty,
+	CASE WHEN ScrappedQty ='NULL' THEN 0 ELSE ScrappedQty  END AS ScrappedQty,
+	CASE StartDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(StartDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS StartDate,
+	CASE EndDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(EndDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS EndDate,
+	CASE DueDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(DueDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS DueDate,
+	CASE WHEN ScrapReasonID= 'NULL' THEN 0 ELSE ScrapReasonID END AS ScrapReasonID,
+	CASE ModifiedDate WHEN 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR(ModifiedDate,1,10) AS DATE FORMAT 'YYYY-MM-DD')  END AS ModifiedDate
+	
+FROM awp_stg1.prod_wo;
+
+---------------------------------------------- Table 22/22 : Unit Measure
+
+INSERT INTO awp_stg2.Production_unit_measure (UnitMeasureCode, Name_10, ModifiedDate)
+
+SELECT DISTINCT  
+		CASE WHEN UnitMeasureCode = 'NULL' THEN 'N/A' ELSE UnitMeasureCode END AS UnitMeasureCode,
+		CASE WHEN Name = 'NULL' THEN 'N/A' ELSE Name END AS Name,
+		CASE WHEN ModifiedDate = 'NULL' THEN  CAST ('1900-01-01' AS DATE FORMAT 'YYYY/MM/DD') ELSE CAST(ModifiedDate AS DATE FORMAT 'YYYY/MM/DD') END AS ModifiedDate
+		
+FROM awp_stg1.prod_um;
+
+
+
+
+
+
+-- J O I N S
+
+-- INNER JOIN ON ( PRODUCT, PRODUCT INVENTORY, PRODUCT LOCATION)
+SELECT P.Name_1 as ProductName, PI.Shelf , L.Name_4 as LocationName
+FROM awp_stg2.Production_product P
+INNER JOIN awp_stg2.Production_product_inventory PI ON P.ProductId_2 = PI.ProductId_4
+INNER JOIN awp_stg2.Production_location L ON L.LocationId = PI.LocationId_1;  ----------- Gives Output Results
+
+
+-- INNER JOIN ON ( PRODUCT, PRODUCT REVIEW AND PRODUCT COST HISTORY)
+SELECT P.Name_1 as ProductName, PR.Rating, PR.Comments, PCH.StandardCost 
+FROM awp_stg2.Production_product P
+INNER JOIN awp_stg2.Production_product_review PR ON P.ProductID_2 = PR.ProductID_3
+INNER JOIN awp_stg2.Production_product_cost_history PCH ON PCH.ProductID_5 = PR.ProductID_3;--------This join gives 0 ROWS
+
+
+
+-- INNER JOIN ON ( PRODUCT, PRODUCT DOCUMENT AND DOCUMENT )
+SELECT P.Name_1 as ProductName, PD.ModifiedDate_16 as ModifiedDate, D.DocumentLevel as DocLevel, D.Title_ as Title_
+FROM awp_stg2.Production_product P 
+INNER JOIN awp_stg2.p_doc PD ON  P.ProductID_2 = PD.ProductID
+INNER JOIN awp_stg2.Production_document D ON D.DocumentNode = PD.DocumentNode_1; -------- Result : 0 ROWS
+
+
+-- RIGHT INNER JOIN ON PRODUCT AND TRANSACTION HISTORY
+SELECT P.Name_1 as ProductName, TH.ReferenceOrderID as RefOrderID, TH.TransactionDate as TransDate, TH.TransactionType as TransType, 
+	   TH.Quantity_1 as Quantity, TH.ActualCost as ActualCost
+FROM awp_stg2.Production_product P
+RIGHT JOIN awp_stg2.Production_transaction_history as TH ON P.ProductID_2 = TH.ProductID_1; -- This gives Output results
+
+
+-- INNER JOIN ON PRODUCT MODEL, PRODUCT DESCRIPTION PRODUCT MODEL CULTURE AND PRODUCT DESCRIPTION
+SELECT PM.Name_5 as Name, PD. Description as Description
+FROM awp_stg2.Production_product_model as PM
+INNER JOIN awp_stg2.Production_product_model_product_description_culture as PMD ON PM.ProductModelID_2 = PMD.ProductModelID_3
+INNER JOIN awp_stg2.Production_product_description as PD ON PD.ProductDescriptionID = PMD.ProductDescriptionID_1; -- This gives output results
+
+
+
+.LOGOFF

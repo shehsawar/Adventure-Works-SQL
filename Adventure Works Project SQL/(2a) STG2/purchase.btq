@@ -1,0 +1,189 @@
+--:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+.LOGON 192.168.25.128 /dbc,dbc; 
+DATABASE awp_stg2;
+
+-- Purchase Module
+
+
+
+-- Data Definition Language (DDL) ------------------------------------------------
+
+
+-- Purchase Order Detail table (1/5)
+CREATE TABLE awp_stg2.Purchase_OrderDetail
+(
+	PurchaseOrderID INTEGER,
+	PurchaseOrderDetailID INTEGER,
+	DueDate DATE,
+	OrderQty SMALLINT,
+	ProductID INTEGER,
+	UnitPrice DECIMAL(7,2),
+	LineTotal DECIMAL(9,2),
+	ReceivedQty INTEGER,
+	RejectedQty INTEGER,
+	StockedQty INTEGER
+)
+PRIMARY INDEX (PurchaseOrderDetailID);
+
+
+
+-- Purchase Order Header table (2/5)
+CREATE TABLE awp_stg2.Purchase_OrderHeader
+(
+	PurchaseOrderID INTEGER,
+	ShipMethodID INTEGER,
+	VendorID INTEGER,
+	RevisionNumber INTEGER,
+	Status INTEGER,
+	EmployeeID INTEGER, --adding this (not included in LDM) becasue its PK arrow is pointing towards Employee table in HR dataset LDM
+	OrderDate DATE,
+	ShipDate DATE,
+	SubTotal DECIMAL(9,2),
+	TaxAmt DECIMAL(7,2),
+	Freight DECIMAL(7,2),
+	TotalDue DECIMAL(9,2)
+)
+PRIMARY INDEX (PurchaseOrderID);
+
+
+
+--Vendor table (3/5)
+CREATE TABLE awp_stg2.Purchase_Vendor
+(
+	BusinessEntityID INTEGER,
+	AccountNumber VARCHAR(24),
+	Name_1 VARCHAR(32), -- changing it becasue NAME is an SQL keyword
+	CreditRating BYTEINT,
+	PreferredVendorStatus BYTEINT,
+	ActiveFlag BYTEINT,
+	PurchasingWebServiceURL VARCHAR(64)
+)
+PRIMARY INDEX (BusinessEntityID);
+
+
+
+--Ship Method table (4/5)
+CREATE TABLE awp_stg2.Purchase_ShipMethod
+(
+	ShipMethodID INTEGER,
+	Name VARCHAR(32),
+	ShipBase decimal(4,2),
+	ShipRate decimal(4,2),
+	rowguid VARCHAR(30)
+)
+PRIMARY INDEX (ShipMethodID);
+
+
+
+--Product Vendor table (5/5)
+CREATE TABLE awp_stg2.Purchase_ProductVendor
+(
+	BusinessEntityID INTEGER,
+	ProductID INTEGER,
+	AverageLeadTime INTEGER,
+	StandardPrice decimal(4,2),
+	LastReceiptCost decimal(4,2),
+	LastReceiptDate DATE,
+	MinOrderQty INTEGER,
+	MaxOrderQty INTEGER,
+	OnOrderQty INTEGER,
+	UnitMeasureCode CHAR(3)
+)
+PRIMARY INDEX (BusinessEntityID);
+
+
+.LOGOFF
+
+
+
+
+--:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+.LOGON 192.168.25.128 /dbc,dbc; 
+DATABASE awp_stg2;
+
+-- Purchase Module
+
+-- Data Modification Language (DML) ------------------------------------------------
+
+-- Purchase Order Detail table (1/5)
+INSERT INTO awp_stg2.Purchase_OrderDetail (PurchaseOrderID, PurchaseOrderDetailID, DueDate, ProductID, OrderQty, UnitPrice, LineTotal, ReceivedQty, RejectedQty, StockedQty)
+	SELECT DISTINCT
+		CASE WHEN PurchaseOrderID_ = 'NULL' THEN -1 ELSE PurchaseOrderID_ END AS PurchaseOrderID_,
+		CASE WHEN PurchaseOrderDetailID ='NULL' THEN -1 ELSE PurchaseOrderDetailID END AS PurchaseOrderDetailID,
+		CASE WHEN DueDate = 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR (DueDate,1,10) AS DATE FORMAT 'YYYY-MM-DD') END AS DueDate,
+		CASE WHEN ProductID = 'NULL' THEN -1 ELSE ProductID END AS ProductID,
+		CASE WHEN OrderQty = 'NULL' THEN -1 ELSE OrderQty END AS OrderQty,
+		CASE WHEN UnitPrice = 'NULL' THEN -1 ELSE CAST (UnitPrice AS DECIMAL(7,2)) END AS UnitPrice,
+		CASE WHEN LineTotal = 'NULL' THEN -1 ELSE CAST (LineTotal AS DECIMAL(9,2)) END AS LineTotal,
+		CASE WHEN ReceivedQty = 'NULL' THEN -1 ELSE ReceivedQty END AS ReceivedQty,
+		CASE WHEN RejectedQty = 'NULL' THEN -1 ELSE RejectedQty END AS RejectedQty,
+		CASE WHEN StockedQty = 'NULL' THEN -1 ELSE StockedQty END AS StockedQty
+FROM awp_stg1.purchase;
+
+
+
+-- Purchase Order Header table (2/5)
+INSERT INTO awp_stg2.Purchase_OrderHeader (PurchaseOrderID, ShipMethodID, VendorID, RevisionNumber, Status, EmployeeID, OrderDate, ShipDate, SubTotal, TaxAmt, Freight, TotalDue)
+	SELECT DISTINCT
+		CASE WHEN PurchaseOrderID = 'NULL' THEN -1 ELSE PurchaseOrderID END AS PurchaseOrderID,
+		CASE WHEN ShipMethodID ='NULL' THEN -1 ELSE ShipMethodID END AS ShipMethodID,
+		CASE WHEN VendorID ='NULL' THEN -1 ELSE VendorID END AS VendorID,
+		CASE WHEN RevisionNumber ='NULL' THEN -1 ELSE RevisionNumber END AS RevisionNumber,
+		CASE WHEN Status ='NULL' THEN -1 ELSE Status END AS Status,
+		CASE WHEN EmployeeID ='NULL' THEN -1 ELSE EmployeeID END AS EmployeeID,
+		CASE WHEN OrderDate = 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR (OrderDate,1,10) AS DATE FORMAT 'YYYY-MM-DD') END AS OrderDate,
+		CASE WHEN ShipDate = 'NULL' THEN CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST (SUBSTR (ShipDate,1,10) AS DATE FORMAT 'YYYY-MM-DD') END AS ShipDate,
+		CASE WHEN SubTotal = 'NULL' THEN -1 ELSE CAST (SubTotal AS DECIMAL(9,2)) END AS SubTotal,
+		CASE WHEN TaxAmt = 'NULL' THEN -1 ELSE CAST (TaxAmt AS DECIMAL(7,2)) END AS TaxAmt,
+		CASE WHEN Freight = 'NULL' THEN -1 ELSE CAST (Freight AS DECIMAL(7,2)) END AS Freight,
+		CASE WHEN TotalDue = 'NULL' THEN -1 ELSE CAST (TotalDue AS DECIMAL(9,2)) END AS TotalDue
+FROM awp_stg1.purchase;
+
+
+
+--Vendor table (3/5)
+INSERT INTO awp_stg2.Purchase_Vendor (BusinessEntityID, AccountNumber, Name_1, CreditRating, PreferredVendorStatus, ActiveFlag, PurchasingWebServiceURL)
+	SELECT DISTINCT
+		CASE WHEN BusinessEntityID = 'NULL' THEN -1 ELSE BusinessEntityID END AS BusinessEntityID,
+		CASE WHEN AccountNumber ='NULL' THEN 'N/A' ELSE AccountNumber END AS AccountNumber,
+		CASE WHEN Name_1 ='NULL' THEN 'N/A' ELSE Name_1 END AS Name_1,
+		CASE WHEN CreditRating ='NULL' THEN -1 ELSE CreditRating END AS CreditRating,
+		CASE WHEN PreferredVendorStatus ='NULL' THEN -1 ELSE PreferredVendorStatus END AS PreferredVendorStatus,
+		CASE WHEN ActiveFlag ='NULL' THEN -1 ELSE ActiveFlag END AS ActiveFlag,
+		CASE WHEN PurchasingWebServiceURL ='NULL' THEN 'N/A' ELSE PurchasingWebServiceURL END AS PurchasingWebServiceURL
+FROM awp_stg1.purchase;
+
+
+
+--Ship Method table (4/5)
+insert into awp_stg2.Purchase_ShipMethod (ShipMethodID, Name, ShipBase, ShipRate, rowguid)
+	Select DISTINCT
+		case when ShipMethodID_1 = 'NULL' then -1 else ShipMethodID_1 end as ShipMethodID_1,
+		case when Name_2 = 'NULL' then 'N/A' else Name_2 end as Name_2,
+		case when ShipBase = 'NULL' then -1 else cast (ShipBase as decimal(4,2)) end as ShipBase,
+		case when ShipRate = 'NULL' then -1 else cast (ShipRate as decimal(4,2)) end as ShipRate,
+		case when rowguid = 'NULL' then 'N/A' else rowguid end as rowguid
+from awp_stg1.purchase;
+
+
+
+--Product Vendor table (5/5)
+insert into awp_stg2.Purchase_ProductVendor (BusinessEntityID, ProductID, AverageLeadTime, StandardPrice, LastReceiptCost, LastReceiptDate, MinOrderQty, MaxOrderQty, OnOrderQty, UnitMeasureCode)
+	select DISTINCT
+		case when BusinessEntityID_2 = 'NULL' then -1 else BusinessEntityID_2 end as BusinessEntityID_2,
+		case when ProductID_1 = 'NULL' then -1 else ProductID_1 end as ProductID_1,
+		case when AverageLeadTime = 'NULL' then -1 else AverageLeadTime end as AverageLeadTime,
+		case when StandardPrice = 'NULL' then -1 else cast (StandardPrice as decimal(4,2)) end as StandardPrice,
+		case when LastReceiptCost = 'NULL' then -1 else cast (LastReceiptCost as decimal(4,2)) end as LastReceiptCost,
+		case when LastReceiptDate = 'NULL' then cast ('1900-01-01' as date format 'YYYY-MM-DD') else cast (substr (LastReceiptDate,1,10) as date format 'YYYY-MM-DD') end as LastReceiptDate,
+		case when MinOrderQty = 'NULL' then -1 else MinOrderQty end as MinOrderQty,
+		case when MaxOrderQty = 'NULL' then -1 else MaxOrderQty end as MaxOrderQty,
+		case when OnOrderQty = 'NULL' then -1 else OnOrderQty end as OnOrderQty,
+		case when UnitMeasureCode = 'NULL' then 'N/A' else UnitMeasureCode end as UnitMeasureCode
+from awp_stg1.purchase;
+-- GETTING 460 ROWS INSTEAD OF MENTIONED 936
+
+
+.LOGOFF

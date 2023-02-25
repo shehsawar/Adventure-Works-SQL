@@ -1,0 +1,59 @@
+.LOGON 192.168.25.128 /dbc,dbc; 
+DATABASE awp_stg2;
+
+--HR Module
+
+
+CREATE TABLE awp_stg2.HR_Department
+(
+	DepartmentID INTEGER GENERATED ALWAYS AS IDENTITY 	--a unique numeric identity to each department (surrogate key)
+			(START WITH 1 
+            INCREMENT BY 1 
+            MINVALUE 1 
+            NO CYCLE),
+	DepartmentName VARCHAR(32),
+	GroupName VARCHAR(32)
+)
+PRIMARY INDEX (DepartmentID);
+
+
+CREATE TABLE awp_stg2.HR_Shift
+(
+    ShiftID INTEGER GENERATED ALWAYS AS IDENTITY 	--a unique numeric identity to each shift (surrogate key)
+		   (START WITH 1
+		   INCREMENT BY 1
+		   MINVALUE 1
+		   NO CYCLE),
+	Name1 VARCHAR(8),
+	StartTime TIME(6),
+	EndTime TIME(6)
+)
+PRIMARY INDEX (ShiftID);
+
+
+CREATE TABLE awp_stg2.HR_Employee
+(
+           BusinessEntityID INTEGER,
+		   NationalIDNumber INTEGER,
+		   LoginID VARCHAR(32), --ShiftID no relation defined in LDM
+		   JobTitle VARCHAR(32),
+		   BirthDate DATE FORMAT 'MM/DD/YYYY', --MaritalStatus not available
+		   Gender CHAR(1),
+		   HireDate DATE FORMAT 'MM/DD/YYYY', --SalariedFlag not available
+		   VacationHours INTEGER,
+		   SickLeaveHours INTEGER --CurrentFlag Not available
+)
+PRIMARY INDEX (BusinessEntityID); 	--already a unique number for each employee
+
+
+CREATE TABLE awp_stg2.HR_EmployeeDepartmentHistory
+(
+           BusinessEntityID INTEGER,
+		   DepartmentID INTEGER,        
+		   StartDate DATE FORMAT 'MM/DD/YYYY',
+		   ShiftID INTEGER,
+		   EndDate DATE FORMAT 'MM/DD/YYYY'
+)
+PRIMARY INDEX (StartDate); 	--for employees who have changed their department (BusinessEntityID, DepartmentID, ShiftID = same, EndDate = NULL for current flag)
+
+.LOGOFF

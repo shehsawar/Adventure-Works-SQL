@@ -1,0 +1,82 @@
+ 
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.25.128/dbc,dbc;
+
+DATABASE awp_stg1;
+.set record vartext ",";
+
+
+DROP TABLE Customer_Sales;
+DROP TABLE Customer_Sales_ERROR1;
+DROP TABLE Customer_Sales_ERROR2; 
+
+CREATE SET TABLE Customer_Sales ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL
+	 (
+CustomerID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+PersonID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+StoreID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+TerritoryID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+AccountNumber	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+rowguid	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+ModifiedDate	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC
+
+
+	 )
+	PRIMARY INDEX Customer_Sales (CustomerID);
+
+RECORD 2;
+
+DEFINE
+
+CustomerID	(VARCHAR(500))
+PersonID	(VARCHAR(500))
+StoreID	(VARCHAR(500))
+TerritoryID	(VARCHAR(500))
+AccountNumber	(VARCHAR(500))
+rowguid	(VARCHAR(500))
+ModifiedDate	(VARCHAR(500))
+
+
+FILE="D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Sales\15 Customer_Sales.CSV";
+
+begin loading
+Customer_Sales
+errorfiles
+Customer_Sales_ERROR1
+,Customer_Sales_ERROR2
+
+
+CHECKPOINT 400000;
+
+insert into Customer_Sales (
+CustomerID,
+PersonID,
+StoreID,
+TerritoryID,
+AccountNumber,
+rowguid,
+ModifiedDate
+
+)
+
+values
+
+(
+:CustomerID,
+:PersonID,
+:StoreID,
+:TerritoryID,
+:AccountNumber,
+:rowguid,
+:ModifiedDate
+
+
+);
+
+
+end loading;
+
+.LOGOFF; 

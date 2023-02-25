@@ -1,0 +1,52 @@
+.LOGON 192.168.25.128 /dbc,dbc; 
+DATABASE awp_stg2;
+
+--HR Module
+
+
+-- Department table
+INSERT INTO awp_stg2.HR_Department(DepartmentID, DepartmentName, GroupName) --filling in a new table in Core Layer: data destination
+SELECT DISTINCT 1, Name, GroupName --duplicate - for creating a dimension table i.e., no repetition
+FROM awp_stg1.HR; --data source: Staging Layer
+
+
+-- Shift table
+INSERT INTO awp_stg2.HR_Shift(ShiftID, Name1, StartTime, EndTime)
+SELECT DISTINCT  1,
+		CASE WHEN Name_1 = 'NULL' THEN 'N/A' ELSE Name_1 END AS Name_1, --replaced Name2 with Name_1 (to match with awp_stg1)
+		CAST (SUBSTR(StartTime,1,10) AS TIME), --starting from 1st charcter, take 10 from StartTime
+		CAST (SUBSTR(EndTime,1,10) AS TIME)
+FROM awp_stg1.HR;
+
+
+-- Employee table
+INSERT INTO awp_stg2.HR_Employee(BusinessEntityID, NationalIDNumber, LoginID, JobTitle, BirthDate, Gender, HireDate, VacationHours, SickLeaveHours)
+SELECT DISTINCT
+		CASE WHEN BusinessEntityID = 'NULL' THEN -1 ELSE BusinessEntityID END AS BusinessEntityID,-- '-1'-->negative-->differentiates missing entry
+		CASE WHEN NationalIDNumber ='NULL' THEN -1 ELSE NationalIDNumber END AS NationalIDNumber,
+		CASE WHEN LoginID = 'NULL' THEN 'N/A' ELSE LoginID END AS LoginID,
+		CASE WHEN JobTitle = 'NULL' THEN 'N/A' ELSE JobTitle END AS JobTitle,
+		CAST (BirthDate AS DATE FORMAT 'MM-DD-YYYY'), --changed date type
+		CASE WHEN Gender = 'NULL' THEN '-' ELSE Gender END AS Gender,
+		CAST (HireDate AS DATE FORMAT 'MM-DD-YYYY'),
+		CASE WHEN VacationHours = 'NULL' THEN 0 ELSE VacationHours END AS VacationHours,
+		CASE WHEN SickLeaves = 'NULL' THEN 0 ELSE SickLeaves END AS SickLeaves --replaced SickLeaveHours with SickLeaves (to match with awp_stg1)
+FROM awp_stg1.HR;
+
+
+-- Employee department history table
+INSERT INTO awp_stg2.HR_EmployeeDepartmentHistory(BusinessEntityID, DepartmentID, StartDate, ShiftID, EndDate)
+SELECT DISTINCT
+		CASE WHEN a.BusinessEntityID = 'NULL' THEN -1 ELSE BusinessEntityID END AS BusinessEntityID,
+		CASE WHEN b.DepartmentID IS NULL THEN -1 ELSE DepartmentID END AS DepartmentID,
+		CASE WHEN StartDate = 'NULL' THEN CAST('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST(a.StartDate AS DATE FORMAT 'YYYY-MM-DD') END AS StartDate,-- giving an old dummy date to differentiate it
+		CASE WHEN c.ShiftID IS NULL THEN -1 ELSE ShiftID END AS ShiftID,
+		CASE WHEN EndDate = 'NULL' THEN  CAST ('1900-01-01' AS DATE FORMAT 'YYYY-MM-DD') ELSE CAST(EndDate AS DATE FORMAT 'YYYY-MM-DD') END AS EndDate -- giving an old dummy date to differentiate it
+FROM awp_stg1.HR a
+		INNER JOIN awp_stg2.HR_Department b 	ON 		a.Name = b.DepartmentName	-- to join DepartmentID, that we've created, with main HR table
+		INNER JOIN awp_stg2.HR_Shift c 			ON 		a.Name_1 = c.Name1;			--      to join ShiftID, that we've created, with main HR table
+
+-- a.Name1 repalced with a.Name (to match with awp_stg1)
+-- a.Name2 repalced with a.Name_1 (to match with awp_stg1)
+
+.LOGOFF

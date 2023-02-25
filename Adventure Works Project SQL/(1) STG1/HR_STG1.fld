@@ -1,0 +1,116 @@
+.sessions 2;
+ERRLIMIT 40;
+
+.LOGON 192.168.25.128/dbc,dbc;
+DATABASE awp_stg1;
+.set record vartext ",";
+
+
+DROP TABLE HR;
+DROP TABLE HR_ERROR1;
+DROP TABLE HR_ERROR2;
+
+
+CREATE MULTISET TABLE HR,
+NO FALLBACK, 
+NO BEFORE JOURNAL, 
+NO AFTER JOURNAL
+
+    (BusinessEntityID 		VARCHAR(200) ,
+	 NationalIDNumber 		VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC ,
+	 LoginID 				VARCHAR(256) CHARACTER SET LATIN NOT CASESPECIFIC ,
+	 JobTitle 				VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC ,
+	 BirthDate 				VARCHAR(50),
+	 Gender 				VARCHAR(10) CHARACTER SET LATIN NOT CASESPECIFIC ,
+	 HireDate 				VARCHAR(50),
+	 VacationHours 			VARCHAR(100),
+	 SickLeaves 			VARCHAR(100),
+	 Name 					VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC ,
+	 GroupName 				VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC ,
+	 Name_1 				VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC ,
+	 StartTime 				VARCHAR(50),
+	 EndTime 				VARCHAR(50),
+	 StartDate 				VARCHAR(50),
+	 EndDate 				VARCHAR(50),
+	 ModifiedDate 			VARCHAR(50))
+PRIMARY INDEX HR ( BusinessEntityID );
+
+
+RECORD 2;
+
+DEFINE
+	 BusinessEntityID 		(VARCHAR(200)) ,
+	 NationalIDNumber 		(VARCHAR(200)),
+	 LoginID 				(VARCHAR(256)) ,
+	 JobTitle 				(VARCHAR(50)) ,
+	 BirthDate 				(VARCHAR(10)) ,
+	 Gender 				(VARCHAR(10)) ,
+	 HireDate 				(VARCHAR(10)),
+	 VacationHours 			(VARCHAR(100)),
+	 SickLeaves 			(VARCHAR(100)) ,
+	 Name 					(VARCHAR(50)),
+	 GroupName 				(VARCHAR(50)),
+	 Name_1 				(VARCHAR(50)),
+	 StartTime 				(VARCHAR(100)),
+	 EndTime 				(VARCHAR(100)),
+	 StartDate 				(VARCHAR(100)),
+	 EndDate 				(VARCHAR(100)),
+	 ModifiedDate 			(VARCHAR(100))
+
+
+FILE="D:\DWHBI\Adventure Works Project\1.Fastload\HR.csv";
+
+begin loading
+HR
+errorfiles
+HR_ERROR1
+,HR_ERROR2
+
+
+CHECKPOINT 50;
+
+insert into 
+HR (
+BusinessEntityID ,
+NationalIDNumber ,
+LoginID ,
+JobTitle ,
+BirthDate ,
+Gender,
+HireDate,
+VacationHours ,
+SickLeaves,
+Name,
+GroupName ,
+Name_1 ,
+StartTime,
+EndTime,
+StartDate ,
+EndDate,
+ModifiedDate
+)
+
+values
+(
+:BusinessEntityID ,
+:NationalIDNumber ,
+:LoginID ,
+:JobTitle ,
+:BirthDate ,
+:Gender,
+:HireDate,
+:VacationHours ,
+:SickLeaves,
+:Name,
+:GroupName ,
+:Name_1 ,
+:StartTime,
+:EndTime,
+:StartDate ,
+:EndDate,
+:ModifiedDate
+);
+
+end loading; 
+
+.LOGOFF;

@@ -1,0 +1,82 @@
+ 
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.25.128/dbc,dbc;
+
+DATABASE awp_stg1;
+.set record vartext ",";
+
+
+DROP TABLE ShoppingCartItem_Sales;
+DROP TABLE ShoppingCartItem_Sales_ERROR1;
+DROP TABLE ShoppingCartItem_Sales_ERROR2; 
+
+CREATE SET TABLE ShoppingCartItem_Sales ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL
+	 (
+ShoppingCartItemID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+ShoppingCartID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+Quantity	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+ProductID	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+DateCreated	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC,
+ModifiedDate	VARCHAR(500) CHARACTER SET LATIN NOT CASESPECIFIC
+
+
+
+	 )
+	PRIMARY INDEX ShoppingCartItem_Sales (ShoppingCartItemID);
+
+RECORD 2;
+
+DEFINE
+
+ShoppingCartItemID	(VARCHAR(500))
+ShoppingCartID	(VARCHAR(500))
+Quantity	(VARCHAR(500))
+ProductID	(VARCHAR(500))
+DateCreated	(VARCHAR(500))
+ModifiedDate	(VARCHAR(500))
+
+
+
+
+FILE="D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Sales\17 ShoppingCartItem_Sales.CSV";
+
+begin loading
+ShoppingCartItem_Sales
+errorfiles
+ShoppingCartItem_Sales_ERROR1
+,ShoppingCartItem_Sales_ERROR2
+
+
+CHECKPOINT 400000;
+
+insert into ShoppingCartItem_Sales (
+ShoppingCartItemID,
+ShoppingCartID,
+Quantity,
+ProductID,
+DateCreated,
+ModifiedDate
+
+
+
+)
+
+values
+
+(
+:ShoppingCartItemID,
+:ShoppingCartID,
+:Quantity,
+:ProductID,
+:DateCreated,
+:ModifiedDate
+
+);
+
+
+end loading;
+
+.LOGOFF; 

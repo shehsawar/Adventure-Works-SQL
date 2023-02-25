@@ -1,0 +1,53 @@
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.25.128/dbc,dbc;
+
+DATABASE awp_stg1;
+.set record vartext ",";
+
+DROP TABLE prod_um;
+DROP TABLE prod_um_ERROR1;
+DROP TABLE prod_um_ERROR2;
+
+CREATE MULTISET TABLE prod_um, NO FALLBACK, NO BEFORE JOURNAL, NO AFTER JOURNAL
+(
+	UnitMeasureCode varchar(200),
+	Name varchar(200),
+	ModifiedDate varchar(200)
+)
+PRIMARY INDEX prod_um (UnitMeasureCode);
+
+RECORD 2;
+
+DEFINE
+	UnitMeasureCode (varchar(200)),
+	Name (varchar(200)),
+	ModifiedDate (varchar(200))
+
+FILE = "D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Production\UnitMeasure_Production.CSV";
+
+begin loading
+prod_um
+errorfiles
+prod_um_ERROR1,
+prod_um_ERROR2
+
+CHECKPOINT 10;
+
+insert into prod_um
+(
+	UnitMeasureCode,
+	Name,
+	ModifiedDate
+)
+
+values
+(
+	:UnitMeasureCode,
+	:Name,
+	:ModifiedDate
+);
+
+end loading; 
+
+.LOGOFF;

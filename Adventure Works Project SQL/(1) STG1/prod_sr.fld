@@ -1,0 +1,37 @@
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.25.128/dbc,dbc;
+DATABASE awp_stg1;
+.set record vartext ",";
+
+DROP TABLE prod_sr;
+DROP TABLE prod_sr_ERROR1;
+DROP TABLE prod_sr_ERROR2;
+
+CREATE MULTISET TABLE prod_sr, NO FALLBACK, NO BEFORE JOURNAL, NO AFTER JOURNAL
+	(ScrapReasonID varchar(200),
+	Name varchar(200),
+	ModifiedDate varchar(200))
+PRIMARY INDEX prod_sr (ScrapReasonID);
+RECORD 2;
+DEFINE
+	ScrapReasonID (varchar(200)),
+	Name (varchar(200)),
+	ModifiedDate (varchar(200))
+FILE = "D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Production\ScrapReason_Production.CSV";
+begin loading
+prod_sr
+errorfiles
+prod_sr_ERROR1,
+prod_sr_ERROR2
+CHECKPOINT 10;
+insert into prod_sr
+	(ScrapReasonID,
+	Name,
+	ModifiedDate)
+values
+(	:ScrapReasonID,
+	:Name,
+	:ModifiedDate);
+end loading; 
+.LOGOFF;

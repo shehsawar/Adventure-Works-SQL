@@ -1,0 +1,90 @@
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.25.128/dbc,dbc;
+
+DATABASE awp_stg1;
+.set record vartext ",";
+
+DROP TABLE prod_wor;
+DROP TABLE prod_wor_ERROR1;
+DROP TABLE prod_wor_ERROR2;
+
+CREATE MULTISET TABLE prod_wor, NO FALLBACK, NO BEFORE JOURNAL, NO AFTER JOURNAL
+(
+	WorkOrderID varchar(200),
+	ProductID varchar(200),
+	OperationSequence varchar(200),
+	LocationID varchar(200),
+	ScheduledStartDate varchar(200),
+	ScheduledEndDate varchar(200),
+	ActualStartDate varchar(200),
+	ActualEndDate varchar(200),
+	ActualResourceHrs varchar(200),
+	PlannedCost varchar(200),
+	ActualCost varchar(200),
+	ModifiedDate varchar(200)
+)
+PRIMARY INDEX prod_wor (WorkOrderID);
+
+RECORD 2;
+
+DEFINE
+	WorkOrderID (varchar(200)),
+	ProductID (varchar(200)),
+	OperationSequence (varchar(200)),
+	LocationID (varchar(200)),
+	ScheduledStartDate (varchar(200)),
+	ScheduledEndDate (varchar(200)),
+	ActualStartDate (varchar(200)),
+	ActualEndDate (varchar(200)),
+	ActualResourceHrs (varchar(200)),
+	PlannedCost (varchar(200)),
+	ActualCost (varchar(200)),
+	ModifiedDate (varchar(200))
+
+
+FILE = "D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Production\WorkOrderRouting_Production.CSV";
+
+begin loading
+prod_wor
+errorfiles
+prod_wor_ERROR1,
+prod_wor_ERROR2
+
+CHECKPOINT 10000; -- keep this number larger (not 10, for example) for smooth executing of the fld code in cmd
+
+insert into prod_wor
+(
+	WorkOrderID,
+	ProductID,
+	OperationSequence,
+	LocationID,
+	ScheduledStartDate,
+	ScheduledEndDate,
+	ActualStartDate,
+	ActualEndDate,
+	ActualResourceHrs,
+	PlannedCost,
+	ActualCost,
+	ModifiedDate
+)
+
+values
+(
+	:WorkOrderID,
+	:ProductID,
+	:OperationSequence,
+	:LocationID,
+	:ScheduledStartDate,
+	:ScheduledEndDate,
+	:ActualStartDate,
+	:ActualEndDate,
+	:ActualResourceHrs,
+	:PlannedCost,
+	:ActualCost,
+	:ModifiedDate
+);
+
+end loading; 
+
+.LOGOFF;

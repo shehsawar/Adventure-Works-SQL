@@ -1,0 +1,53 @@
+.LOGON 192.168.25.128 /dbc,dbc;
+DATABASE awp_rdm;
+
+-- Production Module
+
+
+
+-- Master Tables (4)
+CREATE MULTISET TABLE awp_rdm.Purchase_OrderHeader 
+AS awp_stg2.Purchase_OrderHeader
+WITH DATA;
+
+CREATE MULTISET TABLE awp_rdm.Purchase_ProductVendor 
+AS awp_stg2.Purchase_ProductVendor
+WITH DATA;
+
+CREATE MULTISET TABLE awp_rdm.Purchase_ShipMethod 
+AS awp_stg2.Purchase_ShipMethod
+WITH DATA;
+
+CREATE MULTISET TABLE awp_rdm.Purchase_Vendor 
+AS awp_stg2.Purchase_Vendor
+WITH DATA;
+
+
+-- Transactional Table (1)
+
+-- selected Purchase_OrderDetail because it has 8845 rows (more than the others) and a single date column (OrderHeader has 2)
+CREATE MULTISET TABLE awp_rdm.Purchase_OrderDetail
+	
+	(
+      PurchaseOrderID INTEGER,
+      PurchaseOrderDetailID INTEGER,
+      DueDate DATE FORMAT 'YY/MM/DD',
+      OrderQty SMALLINT,
+      ProductID INTEGER,
+      UnitPrice DECIMAL(7,2),
+      LineTotal DECIMAL(9,2),
+      ReceivedQty INTEGER,
+      RejectedQty INTEGER,
+      StockedQty INTEGER
+	)
+
+	PRIMARY INDEX ( PurchaseOrderDetailID )
+	PARTITION BY RANGE_N ( DueDate BETWEEN DATE '2005-05-31' AND '2008-11-22' EACH INTERVAL '1' DAY );
+
+INSERT INTO awp_rdm.Purchase_OrderDetail
+SELECT * FROM  awp_stg2.Purchase_OrderDetail;
+
+-- if dates are not sorted correctly in the Transaction Table even after using PPI, sort PurchaseOrderDetailID column (this is normal)
+
+
+.LOGOFF

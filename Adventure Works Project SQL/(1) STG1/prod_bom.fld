@@ -1,0 +1,86 @@
+.sessions 2;
+ERRLIMIT 40;
+
+.LOGON 192.168.25.128/dbc,dbc;
+DATABASE awp_stg1;
+.set record vartext ",";
+
+
+DROP TABLE prod_bom;
+DROP TABLE prod_bom_ERROR1;
+DROP TABLE prod_bom_ERROR2;
+
+
+CREATE MULTISET TABLE prod_bom, NO FALLBACK, NO BEFORE JOURNAL, NO AFTER JOURNAL
+
+	(
+	BillOfMaterialsID VARCHAR(500),
+	ProductAssemblyID VARCHAR(500),
+	ComponentID VARCHAR(500),
+	StartDate VARCHAR(500),
+	EndDate VARCHAR(500),
+	UnitMeasureCode VARCHAR(500),
+	BOMLevel VARCHAR(500),
+	PerAssemblyQty VARCHAR(500),
+	ModifiedDate VARCHAR(500)
+	)
+
+PRIMARY INDEX prod_bom (BillOfMaterialsID);
+
+
+RECORD 2;
+
+DEFINE
+	BillOfMaterialsID (VARCHAR(500)),
+	ProductAssemblyID (VARCHAR(500)),
+	ComponentID (VARCHAR(500)),
+	StartDate (VARCHAR(500)),
+	EndDate (VARCHAR(500)),
+	UnitMeasureCode (VARCHAR(500)),
+	BOMLevel (VARCHAR(500)),
+	PerAssemblyQty (VARCHAR(500)),
+	ModifiedDate (VARCHAR(500))
+
+
+FILE = "D:\DWHBI\Adventure Works Project\Dataset\Adventure Works Data Set\Production\BillOfMaterials_Production.CSV";
+
+
+begin loading
+prod_bom
+errorfiles
+prod_bom_ERROR1
+,prod_bom_ERROR2
+
+
+CHECKPOINT 1000;
+
+insert into 
+prod_bom
+(
+	BillOfMaterialsID,
+	ProductAssemblyID,
+	ComponentID,
+	StartDate,
+	EndDate,
+	UnitMeasureCode,
+	BOMLevel,
+	PerAssemblyQty,
+	ModifiedDate
+)
+
+values
+(
+	:BillOfMaterialsID,
+	:ProductAssemblyID,
+	:ComponentID,
+	:StartDate,
+	:EndDate,
+	:UnitMeasureCode,
+	:BOMLevel,
+	:PerAssemblyQty,
+	:ModifiedDate
+);
+
+end loading; 
+
+.LOGOFF;
